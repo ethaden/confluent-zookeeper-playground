@@ -122,10 +122,10 @@ services:
       ZOOKEEPER_JMX_HOSTNAME: zookeeper-4
       ZOOKEEPER_CLIENT_PORT: 21814
       ZOOKEEPER_JMX_PORT: 21804
-      #ZOOKEEPER_PEER_TYPE: observer
       # Original configuration (leading to split-brain)
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
       # Updated configuration, first step (new zookeeper nodes are observers)
+      ZOOKEEPER_PEER_TYPE: observer
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888:observer;zookeeper-5:2888:3888:observer;zookeeper-6:2888:3888:observer
       # Updated configuration, first step (old zookeeper nodes are observers)
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888:observer;zookeeper-2:2888:3888:observer;zookeeper-3:2888:3888:observer;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
@@ -164,6 +164,7 @@ services:
       # Original configuration (leading to split-brain)
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
       # Updated configuration, first step (new zookeeper nodes are observers)
+      ZOOKEEPER_PEER_TYPE: observer
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888:observer;zookeeper-5:2888:3888:observer;zookeeper-6:2888:3888:observer
       # Updated configuration, first step (old zookeeper nodes are observers)
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888:observer;zookeeper-2:2888:3888:observer;zookeeper-3:2888:3888:observer;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
@@ -198,10 +199,10 @@ services:
       ZOOKEEPER_JMX_HOSTNAME: zookeeper-6
       ZOOKEEPER_CLIENT_PORT: 21816
       ZOOKEEPER_JMX_PORT: 21806
-      #ZOOKEEPER_PEER_TYPE: observer
       # Original configuration (leading to split-brain)
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
       # Updated configuration, first step (new zookeeper nodes are observers)
+      ZOOKEEPER_PEER_TYPE: observer
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888:observer;zookeeper-5:2888:3888:observer;zookeeper-6:2888:3888:observer
       # Updated configuration, first step (old zookeeper nodes are observers)
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888:observer;zookeeper-2:2888:3888:observer;zookeeper-3:2888:3888:observer;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888

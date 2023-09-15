@@ -40,13 +40,25 @@ docker-compose up zookeeper-(PUT ID OF ANY ORIGINAL FOLLOWER HERE)
 
 Potentially, restart the second previous follower as well. You might see two leaders.
 
-## How to avoid a split-brain: Observers
-
-
-
-## Kafka (optional)
-Show brokers
+Stop the cluster:
 
 ```bash
-zookeeper-shell localhost:21811 ls /brokers/ids
+docker-compose down
 ```
+
+## How to avoid a split-brain: Observers
+
+A separate configuration is working with observers. Note, that the docker image does not support this out of the box, thus a little hack is required.
+
+```bash
+docker-compose -f docker-compose-with-observers.yml up -d
+```
+
+The idea is, to have working copy synchronized to the observers, than shut down the original nodes, reconfigure the observers to be full nodes and restart them. Note, that this is UNTESTED.
+
+Finally, stop the cluster by running:
+
+```bash
+docker-compose -f docker-compose-with-observers.yml down
+```
+
