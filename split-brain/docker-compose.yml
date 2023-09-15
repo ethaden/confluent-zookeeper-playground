@@ -1,0 +1,264 @@
+---
+version: "3.5"
+
+x-zookeeper-common-settings: &zookeeper-common-settings
+  
+
+# YAML pointer feature to reuse parts of the config
+x-broker-common-settings: &broker-common-settings
+  KAFKA_ZOOKEEPER_CONNECT: 'zookeeper-1:21811'
+  # listeners
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER:PLAINTEXT,HOST:PLAINTEXT
+  KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+  # interesting features
+  KAFKA_DELETE_TOPIC_ENABLE: 'true'
+  KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+
+services:
+  zookeeper-1:
+    image: confluentinc/cp-zookeeper:${CP_VERSION}
+    hostname: zookeeper-1
+    container_name: zookeeper-1
+    restart: always
+    ports:
+      - "21811:21811"
+      - "31801:31801"
+      - "21801:21801"
+    networks:
+      - confluent
+    volumes:
+      - data-zookeeper-log-1:/var/lib/zookeeper/log
+      - data-zookeeper-data-1:/var/lib/zookeeper/data
+    environment:
+      ZOOKEEPER_TICK_TIME: 2000
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_JMX_HOSTNAME: zookeeper-1
+      ZOOKEEPER_CLIENT_PORT: 21811
+      ZOOKEEPER_JMX_PORT: 21801
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+
+  zookeeper-2:
+    image: confluentinc/cp-zookeeper:${CP_VERSION}
+    hostname: zookeeper-2
+    container_name: zookeeper-2
+    restart: always
+    ports:
+      - "21812:21812"
+      - "31802:31802"
+      - "21802:21802"
+    networks:
+      - confluent
+    volumes:
+      - data-zookeeper-log-2:/var/lib/zookeeper/log
+      - data-zookeeper-data-2:/var/lib/zookeeper/data
+    environment:
+      ZOOKEEPER_TICK_TIME: 2000
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_JMX_HOSTNAME: zookeeper-2
+      ZOOKEEPER_CLIENT_PORT: 21812
+      ZOOKEEPER_JMX_PORT: 21802
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+
+
+  zookeeper-3:
+    image: confluentinc/cp-zookeeper:${CP_VERSION}
+    hostname: zookeeper-3
+    container_name: zookeeper-3
+    restart: always
+    ports:
+      - "21813:21813"
+      - "31803:31803"
+      - "21803:21803"
+    networks:
+      - confluent
+    volumes:
+      - data-zookeeper-log-3:/var/lib/zookeeper/log
+      - data-zookeeper-data-3:/var/lib/zookeeper/data
+    environment:
+      ZOOKEEPER_TICK_TIME: 2000
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_JMX_HOSTNAME: zookeeper-3
+      ZOOKEEPER_CLIENT_PORT: 21813
+      ZOOKEEPER_JMX_PORT: 21803
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+
+  zookeeper-4:
+    image: confluentinc/cp-zookeeper:${CP_VERSION}
+    hostname: zookeeper-4
+    container_name: zookeeper-4
+    restart: always
+    ports:
+      - "21814:21814"
+      - "31804:31804"
+      - "21804:21804"
+    networks:
+      - confluent
+    volumes:
+      - data-zookeeper-log-4:/var/lib/zookeeper/log
+      - data-zookeeper-data-4:/var/lib/zookeeper/data
+    # Simulate broken zookeeper node by just running a different command in the container
+    # Note: The container needs to run for name resolution to work
+    # Comment next line to enable this zookeeper instance
+    command: tail -F /dev/null
+    environment:
+      ZOOKEEPER_TICK_TIME: 2000
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
+      ZOOKEEPER_SERVER_ID: 4
+      ZOOKEEPER_JMX_HOSTNAME: zookeeper-4
+      ZOOKEEPER_CLIENT_PORT: 21814
+      ZOOKEEPER_JMX_PORT: 21804
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+  
+  zookeeper-5:
+    image: confluentinc/cp-zookeeper:${CP_VERSION}
+    hostname: zookeeper-5
+    container_name: zookeeper-5
+    restart: always
+    ports:
+      - "21815:21815"
+      - "31805:31805"
+      - "21805:21805"
+    networks:
+      - confluent
+    volumes:
+      - data-zookeeper-log-5:/var/lib/zookeeper/log
+      - data-zookeeper-data-5:/var/lib/zookeeper/data
+    # Simulate broken zookeeper node by just running a different command in the container
+    # Note: The container needs to run for name resolution to work
+    # Comment next line to enable this zookeeper instance
+    command: tail -F /dev/null
+    environment:
+      ZOOKEEPER_TICK_TIME: 2000
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
+      ZOOKEEPER_SERVER_ID: 5
+      ZOOKEEPER_JMX_HOSTNAME: zookeeper-5
+      ZOOKEEPER_CLIENT_PORT: 21815
+      ZOOKEEPER_JMX_PORT: 21805
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+
+  zookeeper-6:
+    image: confluentinc/cp-zookeeper:${CP_VERSION}
+    hostname: zookeeper-6
+    container_name: zookeeper-6
+    restart: always
+    ports:
+      - "21816:21816"
+      - "31806:31806"
+      - "21806:21806"
+    networks:
+      - confluent
+    volumes:
+      - data-zookeeper-log-6:/var/lib/zookeeper/log
+      - data-zookeeper-data-6:/var/lib/zookeeper/data
+    # Simulate broken zookeeper node by just running a different command in the container
+    # Note: The container needs to run for name resolution to work
+    # Comment next line to enable this zookeeper instance
+    command: tail -F /dev/null
+    environment:
+      ZOOKEEPER_TICK_TIME: 2000
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
+      ZOOKEEPER_SERVER_ID: 6
+      ZOOKEEPER_JMX_HOSTNAME: zookeeper-6
+      ZOOKEEPER_CLIENT_PORT: 21816
+      ZOOKEEPER_JMX_PORT: 21806
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+
+  kafka-1:
+    image:  confluentinc/cp-enterprise-kafka:${CP_VERSION}
+    hostname: kafka-1
+    container_name: kafka-1
+    restart: always
+    ports:
+      - "19092:19092"
+      - "10091:10091"
+    networks:
+      - confluent
+    volumes:
+      - data-kafka-1:/var/lib/kafka/data
+    environment:
+      <<: *broker-common-settings
+      KAFKA_BROKER_ID: 101
+      # listeners
+      KAFKA_LISTENERS: DOCKER://:9092,HOST://:19092
+      KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka-1:9092,HOST://kafka-1:19092
+      # jmx
+      KAFKA_JMX_HOSTNAME: kafka-1
+      KAFKA_JMX_PORT: 10091
+
+  kafka-2:
+    image:  confluentinc/cp-enterprise-kafka:${CP_VERSION}
+    hostname: kafka-2
+    container_name: kafka-2
+    restart: always
+    ports:
+      - "29092:29092"
+      - "20091:20091"
+    networks:
+      - confluent
+    volumes:
+      - data-kafka-2:/var/lib/kafka/data
+    environment:
+      <<: *broker-common-settings
+      KAFKA_BROKER_ID: 102
+      # listeners
+      KAFKA_LISTENERS: DOCKER://:9092,HOST://:29092
+      KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka-2:9092,HOST://kafka-2:29092
+      # jmx
+      KAFKA_JMX_HOSTNAME: kafka-2
+      KAFKA_JMX_PORT: 20091
+
+  kafka-3:
+    image:  confluentinc/cp-enterprise-kafka:${CP_VERSION}
+    hostname: kafka-3
+    container_name: kafka-3
+    restart: always
+    ports:
+      - "39092:39092"
+      - "30091:30091"
+    networks:
+      - confluent
+    volumes:
+      - data-kafka-3:/var/lib/kafka/data
+    environment:
+      <<: *broker-common-settings
+      KAFKA_BROKER_ID: 103
+      # listeners
+      KAFKA_LISTENERS: DOCKER://:9092,HOST://:39092
+      KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka-3:9092,HOST://kafka-3:39092
+      # jmx
+      KAFKA_JMX_HOSTNAME: kafka-3
+      KAFKA_JMX_PORT: 30091
+
+volumes:
+  data-zookeeper-log-1:
+  data-zookeeper-data-1:
+  data-zookeeper-log-2:
+  data-zookeeper-data-2:
+  data-zookeeper-log-3:
+  data-zookeeper-data-3:
+  data-zookeeper-log-4:
+  data-zookeeper-data-4:
+  data-zookeeper-log-5:
+  data-zookeeper-data-5:
+  data-zookeeper-log-6:
+  data-zookeeper-data-6:
+  data-kafka-1:
+  data-kafka-2:
+  data-kafka-3:
+
+networks:
+  confluent:
