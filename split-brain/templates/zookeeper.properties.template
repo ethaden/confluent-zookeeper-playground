@@ -69,7 +69,9 @@ dataLogDir=/var/lib/zookeeper/log
   'ZOOKEEPER_ADMIN_SERVER_PORT' : 'admin.serverPort',
   'ZOOKEEPER_ADMIN_IDLE_TIMEOUT' : 'admin.idleTimeout',
   'ZOOKEEPER_ADMIN_COMMAND_URL' : 'admin.commandURL',
-  'ZOOKEEPER_PEER_TYPE' : 'peerType'
+  'ZOOKEEPER_PEER_TYPE' : 'peerType',
+  'ZOOKEEPER_RECONFIG_ENABLE' : 'reconfigEnabled',
+  'ZOOKEEPER_DYNAMIC_CONFIG_FILE' : 'dynamicConfigFile',
  } -%}
 
 {% for k, property in other_props.items() -%}

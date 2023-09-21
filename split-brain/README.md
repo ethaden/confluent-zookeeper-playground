@@ -46,9 +46,9 @@ Stop the cluster:
 docker-compose down
 ```
 
-## How to avoid a split-brain: Observers
+## How to avoid a split-brain: Observers (not working properly)
 
-A separate configuration is working with observers. Note, that the docker image does not support this out of the box, thus a little hack is required.
+An alternative configuration is working with observers. Note, that the docker image does not support this out of the box, thus a little hack is required.
 
 ```bash
 docker-compose -f docker-compose-with-observers.yml up -d
@@ -62,3 +62,19 @@ Finally, stop the cluster by running:
 docker-compose -f docker-compose-with-observers.yml down
 ```
 
+## How to avoid a split-brain: Dynamic reconfiguration with Observers
+Another alternative configuration is working with dynamic reconfiguration and observers. Note, that the docker image does not support this out of the box, thus a little hack is required. The configuration is splitted in two config files: One is configured using the environment variables which are interpreted by the docker image startup scripts to create a static configuration file. This static configuration enables dynamic reconfiguration and defines a dynamic reconfiguration file. This dynamic reconfiguration file is mounted as a volume. Each zookeeper node has a separate dynamic configuration file, to allow individual fine-granular modifications. The servers are defined in the dynamic configuration.
+
+We start with a reasonable dynamic configuration, which you can find in `config/zookeeper.properties.dynamic`.
+For this demo, we create a copy of that initial file for each zookeeper nodes. The respective copy for each node is mounted into the docker containers. DO NOT CHANGE the copies manually during operation. They are changed by zookeeper when you issue a `reconfig` command.
+You can have a look at the files, though. Create the copies by running the following command in the `split-brain` folder:
+
+```bash
+for i in 1 2 3 4 5 6; do cp config/zookeeper.properties.dynamic config/zookeeper.properties.dynamic-zk$i; done
+
+```bash
+docker-compose -f docker-compose-with-observers-dynamic-reconfig.yml up -d
+```
+
+### Step 1
+We assume that initially there are three servers with existing data that form a quorum. We already added three observers in the initial configuration.
