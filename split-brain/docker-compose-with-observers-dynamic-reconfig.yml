@@ -36,6 +36,7 @@ services:
       # We have one observer per location (i.e. nodes 3 and 6) which can be promoted in case the other location fails
       # The servers are specified in the dynamic config files, check the README.MD
       ZOOKEEPER_RECONFIG_ENABLE: "true"
+      ZOOKEEPER_SKIP_ACL: "yes"
       ZOOKEEPER_INIT_LIMIT: "5"
       ZOOKEEPER_SYNC_LIMIT: "2"
       ZOOKEEPER_DYNAMIC_CONFIG_FILE: "/etc/kafka/zookeeper.properties.dynamic"
@@ -74,6 +75,7 @@ services:
       # We have one observer per location (i.e. nodes 3 and 6) which can be promoted in case the other location fails
       # The servers are specified in the dynamic config files, check the README.MD
       ZOOKEEPER_RECONFIG_ENABLE: "true"
+      ZOOKEEPER_SKIP_ACL: "yes"
       ZOOKEEPER_INIT_LIMIT: "5"
       ZOOKEEPER_SYNC_LIMIT: "2"
       ZOOKEEPER_DYNAMIC_CONFIG_FILE: "/etc/kafka/zookeeper.properties.dynamic"
@@ -112,6 +114,7 @@ services:
       # We have one observer per location (i.e. nodes 3 and 6) which can be promoted in case the other location fails
       # The servers are specified in the dynamic config files, check the README.MD
       ZOOKEEPER_RECONFIG_ENABLE: "true"
+      ZOOKEEPER_SKIP_ACL: "yes"
       ZOOKEEPER_INIT_LIMIT: "5"
       ZOOKEEPER_SYNC_LIMIT: "2"
       ZOOKEEPER_DYNAMIC_CONFIG_FILE: "/etc/kafka/zookeeper.properties.dynamic"
@@ -158,6 +161,7 @@ services:
       # We have one observer per location (i.e. nodes 3 and 6) which can be promoted in case the other location fails
       # The servers are specified in the dynamic config files, check the README.MD
       ZOOKEEPER_RECONFIG_ENABLE: "true"
+      ZOOKEEPER_SKIP_ACL: "yes"
       ZOOKEEPER_INIT_LIMIT: "5"
       ZOOKEEPER_SYNC_LIMIT: "2"
       ZOOKEEPER_DYNAMIC_CONFIG_FILE: "/etc/kafka/zookeeper.properties.dynamic"
@@ -205,6 +209,7 @@ services:
       # We have one observer per location (i.e. nodes 3 and 6) which can be promoted in case the other location fails
       # The servers are specified in the dynamic config files, check the README.MD
       ZOOKEEPER_RECONFIG_ENABLE: "true"
+      ZOOKEEPER_SKIP_ACL: "yes"
       ZOOKEEPER_INIT_LIMIT: "5"
       ZOOKEEPER_SYNC_LIMIT: "2"
       ZOOKEEPER_DYNAMIC_CONFIG_FILE: "/etc/kafka/zookeeper.properties.dynamic"
@@ -251,6 +256,7 @@ services:
       # We have one observer per location (i.e. nodes 3 and 6) which can be promoted in case the other location fails
       # The servers are specified in the dynamic config files, check the README.MD
       ZOOKEEPER_RECONFIG_ENABLE: "true"
+      ZOOKEEPER_SKIP_ACL: "yes"
       ZOOKEEPER_INIT_LIMIT: "5"
       ZOOKEEPER_SYNC_LIMIT: "2"
       ZOOKEEPER_DYNAMIC_CONFIG_FILE: "/etc/kafka/zookeeper.properties.dynamic"

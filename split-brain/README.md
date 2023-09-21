@@ -78,3 +78,47 @@ docker-compose -f docker-compose-with-observers-dynamic-reconfig.yml up -d
 
 ### Step 1
 We assume that initially there are three servers with existing data that form a quorum. We already added three observers in the initial configuration.
+
+### Step 2
+We now promote on of the observers to a participant dynamically. The quorum will remain intact. In this demo, we run zookeeper-shell in one (any) of the docker containers, for simplicitly (adapt hostname and port as required):
+
+```bash
+docker-compose -f docker-compose-with-observers-dynamic-reconfig.yml exec zookeeper-1 zookeeper-shell localhost:21811
+```
+
+Show the current configuration:
+
+```bash
+config
+```
+
+Note that we use three ports in this example:
+
+* Port 2888 is used as usual for follower connections if a node is a leader
+* Port 3888 is used during elections
+* The client port is customized because we want it to be accessible from the docker host:
+  * Node 1 uses client port 21811
+  * Node 2 uses client port 21812
+  * Node 3 uses client port 21813
+  * Node 4 uses client port 21814
+  * Node 5 uses client port 21815
+  * Node 6 uses client port 21816
+
+In a different shell, run this command to check the zookeeper ensemble:
+
+```bash
+for PORT in 21811 21812 21813 21814 21815 21816; do echo $PORT; (echo stats | nc localhost ${PORT}|grep -E "Mode|current"); done
+```
+
+
+Now we promote one of the observers (namely node 5) to be a participant. Run the following in zookeeper-shell (it will update the dynamic configurations on all all zookeeper nodes):
+
+```bash
+reconfig -add server.5=zookeeper-5:2888:3888:participant;21815
+```
+
+In a different shell, run this command to check the zookeeper ensemble again:
+
+```bash
+for PORT in 21811 21812 21813 21814 21815 21816; do echo $PORT; (echo stats | nc localhost ${PORT}|grep -E "Mode|current"); done
+```
