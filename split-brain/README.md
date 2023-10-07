@@ -46,6 +46,35 @@ Stop the cluster:
 docker-compose down
 ```
 
+## How to avoid a split-brain: Disabled data dir auto-create for new nodes
+
+Let's assume we have three working nodes, nodes 1 and 2 are in data center 1 (DC1) and node 3 (!) is in data center 2 (DC2). We want to avoid the situation that the two nodes in DC1 just update the Kafka configuration with their majority without having to get a vote from the node(s) in DC2.
+
+Thus, we spin up three additional nodes. However, we make sure these nodes do not auto-create an empty namespace (otherweise they could cause a split-brain situation where the three old nodes have different state than the three new nodes).
+
+In this setup, having three nodes in each data center ensures that quorum requires at least 4 nodes. No data center can decide anything without the other. Obviously, this is great for consistency and durability of our metadata, but bad for availability (if one DC is down, nothing works anymore).
+
+All additional nodes are initiated by running `` which will just create the missing data dir and the id file in it, but will NOT create an empty namespace in it. Thus, the client has to synchronize first with the existing nodes until it becomes a full  participant and takes part in leader elections.
+
+Spin up the initial three nodes by running:
+
+```shell
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-1 zookeeper-2 zookeeper-3
+```
+
+Check their states by running:
+
+```shell
+for PORT in 21811 21812 21813 21814 21815 21816; do echo $PORT; (echo stats | nc localhost ${PORT}|grep -E "Mode|current"); done
+```
+
+## How to avoid a split-brain: Hiearchical quorum and disabled auto-create
+
+Let's assume we have three working nodes, nodes 1 and 2 are in data center 1 (DC1) and node 4 is in data center 2 (DC2). We want to avoid the situation that the two nodes in DC1 just update the Kafka configuration with their majority without having to get a vote from the node(s) in DC2.
+
+Thus, we spin up three additional nodes. However, we make sure these nodes do not auto-create an empty namespace (otherweise they could cause a split-brain situation where the three old nodes have different state than the three new nodes).
+
+
 ## How to avoid a split-brain: Observers (not working properly)
 
 An alternative configuration is working with observers. Note, that the docker image does not support this out of the box, thus a little hack is required.
