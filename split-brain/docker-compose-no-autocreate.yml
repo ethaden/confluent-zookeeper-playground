@@ -92,19 +92,27 @@ services:
     # Note: The container needs to run for name resolution to work
     # Comment next line to enable this zookeeper instance
     #command: tail -F /dev/null
+    # We make sure the node is started without a znode namespace and thus forced to synchonize first
+    command:
+      - /bin/bash
+      - -c
+      - |
+        rm -rf /var/lib/zookeeper/data/version-2
+        mkdir -p /var/lib/zookeeper/data/version-2
+        /etc/confluent/docker/run
     environment:
       ZOOKEEPER_TICK_TIME: 2000
-      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.db.autocreate=false"
       ZOOKEEPER_SERVER_ID: 4
       ZOOKEEPER_JMX_HOSTNAME: zookeeper-4
       ZOOKEEPER_CLIENT_PORT: 21814
       ZOOKEEPER_JMX_PORT: 21804
       # Initial configuration
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
       # Final configuration
       #ZOOKEEPER_GROUP_1=1:2:4
       #ZOOKEEPER_GROUP_2=3:5:6
-      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
  
   ############################################################
   # Data Center 2                                            #
@@ -131,11 +139,11 @@ services:
       ZOOKEEPER_CLIENT_PORT: 21813
       ZOOKEEPER_JMX_PORT: 21803
       # Initial configuration
-      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
       # Final configuration
       #ZOOKEEPER_GROUP_1=1:2:4
       #ZOOKEEPER_GROUP_2=3:5:6
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
 
   zookeeper-5:
     image: confluentinc/cp-zookeeper:${CP_VERSION}
@@ -155,9 +163,17 @@ services:
     # Note: The container needs to run for name resolution to work
     # Comment next line to enable this zookeeper instance
     #command: tail -F /dev/null
+    # We make sure the node is started without a znode namespace and thus forced to synchonize first
+    command:
+      - /bin/bash
+      - -c
+      - |
+        rm -rf /var/lib/zookeeper/data/version-2
+        mkdir -p /var/lib/zookeeper/data/version-2
+        /etc/confluent/docker/run
     environment:
       ZOOKEEPER_TICK_TIME: 2000
-      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.db.autocreate=false"
       ZOOKEEPER_SERVER_ID: 5
       ZOOKEEPER_JMX_HOSTNAME: zookeeper-5
       ZOOKEEPER_CLIENT_PORT: 21815
@@ -187,9 +203,17 @@ services:
     # Note: The container needs to run for name resolution to work
     # Comment next line to enable this zookeeper instance
     #command: tail -F /dev/null
+    # We make sure the node is started without a znode namespace and thus forced to synchonize first
+    command:
+      - /bin/bash
+      - -c
+      - |
+        rm -rf /var/lib/zookeeper/data/version-2
+        mkdir -p /var/lib/zookeeper/data/version-2
+        /etc/confluent/docker/run
     environment:
       ZOOKEEPER_TICK_TIME: 2000
-      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.db.autocreate=false"
       ZOOKEEPER_SERVER_ID: 6
       ZOOKEEPER_JMX_HOSTNAME: zookeeper-6
       ZOOKEEPER_CLIENT_PORT: 21816
