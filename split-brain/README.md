@@ -132,10 +132,23 @@ Nodes 1-5 each know only about 5 nodes, thus the three properly initialized node
 
 ## How to avoid a split-brain: Hiearchical quorum and disabled auto-create
 
-Let's assume we have three working nodes, nodes 1 and 2 are in data center 1 (DC1) and node 4 is in data center 2 (DC2). We want to avoid the situation that the two nodes in DC1 just update the Kafka configuration with their majority without having to get a vote from the node(s) in DC2.
+In this example we want to achieve a hiearchical setup consisting of two groups of Zookeeper nodes (one per data center), where each group consists of three nodes located in the same data center. The main advantage over having three nodes in one and three nodes in the other data center is that this solution is battle-proved and recommended.
 
-Thus, we spin up three additional nodes. However, we make sure these nodes do not auto-create an empty namespace (otherweise they could cause a split-brain situation where the three old nodes have different state than the three new nodes).
+Follow the steps described in the last section to spin up six Zookeeper nodes. Then, edit the docker compose file and enable the lines for configuring the groups for each of the nodes. Restart the nodes by running:
 
+```shell
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-1
+sleep 2
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-2
+sleep 2
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-4
+sleep 2
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-3
+sleep 2
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-5
+sleep 2
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-6
+```
 
 ## How to avoid a split-brain: Observers (not working properly)
 
