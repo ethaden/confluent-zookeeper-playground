@@ -98,6 +98,14 @@ services:
     # Note: The container needs to run for name resolution to work
     # Comment next line to enable this zookeeper instance
     #command: tail -F /dev/null
+    # If this node is started without autocreation, we create a file "initialize" which causes zookeeper to synchronize from other nodes
+    command:
+      - /bin/bash
+      - -c
+      - |
+        if ! [[ -d /var/lib/zookeeper/data/initialized/version-2 ]]; then
+          touch /var/lib/zookeeper/data/initialize
+        fi && /etc/confluent/docker/run
     environment:
       ZOOKEEPER_TICK_TIME: 2000
       KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.db.autocreate=false"
@@ -106,12 +114,12 @@ services:
       ZOOKEEPER_CLIENT_PORT: 21814
       ZOOKEEPER_JMX_PORT: 21804
       # Step 1: Initial configuration
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
       # Final configuration
       #ZOOKEEPER_GROUP_1=1:2:4
       #ZOOKEEPER_GROUP_2=3:5:6
       # Step 2: Bring 5 nodes up (the 3 originals and 2 new nodes) for ensuring a quorum and propery initialization of the new nodes
-      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
       # Step 3: Add the remaining new node as soon as all other nodes are in sync
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
  
@@ -140,14 +148,14 @@ services:
       ZOOKEEPER_CLIENT_PORT: 21813
       ZOOKEEPER_JMX_PORT: 21803
       # Step 1: Initial configuration
-      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
       # Final configuration
       #ZOOKEEPER_GROUP_1=1:2:4
       #ZOOKEEPER_GROUP_2=3:5:6
       # Step 2: Bring 5 nodes up (the 3 originals and 2 new nodes) for ensuring a quorum and propery initialization of the new nodes
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
       # Step 3: Add the remaining new node as soon as all other nodes are in sync
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
 
   zookeeper-5:
     image: confluentinc/cp-zookeeper:${CP_VERSION}
@@ -167,6 +175,14 @@ services:
     # Note: The container needs to run for name resolution to work
     # Comment next line to enable this zookeeper instance
     #command: tail -F /dev/null
+    # If this node is started without autocreation, we create a file "initialize" which causes zookeeper to synchronize from other nodes
+    command:
+      - /bin/bash
+      - -c
+      - |
+        if ! [[ -d /var/lib/zookeeper/data/initialized/version-2 ]]; then
+          touch /var/lib/zookeeper/data/initialize
+        fi && /etc/confluent/docker/run
     environment:
       ZOOKEEPER_TICK_TIME: 2000
       KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.db.autocreate=false"
@@ -180,9 +196,9 @@ services:
       #ZOOKEEPER_GROUP_1=1:2:4
       #ZOOKEEPER_GROUP_2=3:5:6
       # Step 2: Bring 5 nodes up (the 3 originals and 2 new nodes) for ensuring a quorum and propery initialization of the new nodes
-      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
       # Step 3: Add the remaining new node as soon as all other nodes are in sync
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
 
   zookeeper-6:
     image: confluentinc/cp-zookeeper:${CP_VERSION}
@@ -202,6 +218,14 @@ services:
     # Note: The container needs to run for name resolution to work
     # Comment next line to enable this zookeeper instance
     #command: tail -F /dev/null
+    # If this node is started without autocreation, we create a file "initialize" which causes zookeeper to synchronize from other nodes
+    command:
+      - /bin/bash
+      - -c
+      - |
+        if ! [[ -d /var/lib/zookeeper/data/initialized/version-2 ]]; then
+          touch /var/lib/zookeeper/data/initialize
+        fi && /etc/confluent/docker/run
     environment:
       ZOOKEEPER_TICK_TIME: 2000
       KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.db.autocreate=false"

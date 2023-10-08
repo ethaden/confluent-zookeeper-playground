@@ -68,6 +68,31 @@ Check their states by running:
 for PORT in 21811 21812 21813 21814 21815 21816; do echo $PORT; (echo stats | nc localhost ${PORT}|grep -E "Mode|current"); done
 ```
 
+```shell
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-4 zookeeper-5 zookeeper-6
+``
+
+Check their state again:
+
+```shell
+for PORT in 21811 21812 21813 21814 21815 21816; do echo $PORT; (echo stats | nc localhost ${PORT}|grep -E "Mode|current"); done
+```
+
+Check the current epoch of each node:
+
+```shell
+for ID in 1 2 3 4 5 6; do echo -n "$ID: "; docker exec -t zookeeper-${ID} cat /var/lib/zookeeper/data/version-2/currentEpoch; echo ""; done
+```
+
+We disabled autocreation of data dirs for nodes 4, 5 and 6 and they are not yet mentioned in the configs of nodes 1, 2 and 3.
+Thus they cannot synchronize. Let's change that. In the docker-compose file, update the environment variables of nodes 1, 2 and 3 as follows:
+Comment the ZOOKEEPER_SERVERS line where only nodes 1, 2 and 3 are present. Uncomment the line where all six nodes are present.
+Then, restart the containers:
+
+```shell
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-1 zookeeper-2 zookeeper-3
+``
+
 ## How to avoid a split-brain: Hiearchical quorum and disabled auto-create
 
 Let's assume we have three working nodes, nodes 1 and 2 are in data center 1 (DC1) and node 4 is in data center 2 (DC2). We want to avoid the situation that the two nodes in DC1 just update the Kafka configuration with their majority without having to get a vote from the node(s) in DC2.
