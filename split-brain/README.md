@@ -142,15 +142,15 @@ Follow the steps described in the last section to spin up six Zookeeper nodes. T
 
 ```shell
 docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-1
-sleep 2
+sleep 5
 docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-2
-sleep 2
+sleep 5
 docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-4
-sleep 2
+sleep 5
 docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-3
-sleep 2
+sleep 5
 docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-5
-sleep 2
+sleep 5
 docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-6
 ```
 
