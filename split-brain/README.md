@@ -80,13 +80,13 @@ Check the state again:
 for PORT in 21811 21812 21813 21814 21815 21816; do echo $PORT; (echo stats | nc localhost ${PORT}|grep -E "Mode|current"); done
 ```
 
-The fourth node should have joined the quorum.
-
 Check the current epoch of each node:
 
 ```shell
 for ID in 1 2 3 4 5 6; do echo -n "$ID: "; docker exec -t zookeeper-${ID} cat /var/lib/zookeeper/data/version-2/currentEpoch; echo ""; done
 ```
+
+The fourth node should have joined the quorum. If you want just four nodes, update the server configuration of nodes 1, 2 and 3 and restart them one by one. If you want to go for six nodes, continue below.
 
 Now that we have four Zookeeper nodes forming a quorum, we can add the addition two nodes.
 In the docker-compose file, update the environment variables of nodes 1, 2, 3 and 4 as follows:
