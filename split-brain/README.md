@@ -154,6 +154,27 @@ sleep 5
 docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-6
 ```
 
+Check the state again:
+
+```shell
+for PORT in 21811 21812 21813 21814 21815 21816; do echo $PORT; (echo stats | nc localhost ${PORT}|grep -E "Mode|current"); done
+```
+
+All nodes should have joined the quorum.
+
+Check the current epoch of each node:
+
+```shell
+for ID in 1 2 3 4 5 6; do echo -n "$ID: "; docker exec -t zookeeper-${ID} cat /var/lib/zookeeper/data/version-2/currentEpoch; echo ""; done
+```
+
+You can test the hierarchical quorum by stopping two nodes in the same group. In a regular setup with six nodes, this wouldn't cause quorum to be lost. In a hierarchical setup quorum will be lost.
+
+```shell
+docker-compose -f docker-compose-no-autocreate.yml stop zookeeper-5 zookeeper-6
+```
+
+
 ## How to avoid a split-brain: Observers (not working properly)
 
 An alternative configuration is working with observers. Note, that the docker image does not support this out of the box, thus a little hack is required.
