@@ -54,7 +54,7 @@ Thus, we spin up three additional nodes. However, we make sure these nodes do no
 
 In this setup, having three nodes in each data center ensures that quorum requires at least 4 nodes. No data center can decide anything without the other. Obviously, this is great for consistency and durability of our metadata, but bad for availability (if one DC is down, nothing works anymore).
 
-All additional nodes are initiated by running `` which will just create the missing data dir and the id file in it, but will NOT create an empty namespace in it. Thus, the client has to synchronize first with the existing nodes until it becomes a full  participant and takes part in leader elections.
+Note: We disabled auto-creation of data dirs for nodes 4, 5 and 6. They need to get their initial state from an existing quorum.
 
 Spin up the initial three nodes by running:
 
@@ -68,15 +68,19 @@ Check their states by running:
 for PORT in 21811 21812 21813 21814 21815 21816; do echo $PORT; (echo stats | nc localhost ${PORT}|grep -E "Mode|current"); done
 ```
 
+Bring up a fourth node, which is configured just to know the first three and itself (and does NOT auto-create its data dir):
+
 ```shell
-docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-4 zookeeper-5 zookeeper-6
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-4
 ``
 
-Check their state again:
+Check the state again:
 
 ```shell
 for PORT in 21811 21812 21813 21814 21815 21816; do echo $PORT; (echo stats | nc localhost ${PORT}|grep -E "Mode|current"); done
 ```
+
+The fourth node should have joined the quorum.
 
 Check the current epoch of each node:
 
@@ -84,14 +88,47 @@ Check the current epoch of each node:
 for ID in 1 2 3 4 5 6; do echo -n "$ID: "; docker exec -t zookeeper-${ID} cat /var/lib/zookeeper/data/version-2/currentEpoch; echo ""; done
 ```
 
-We disabled autocreation of data dirs for nodes 4, 5 and 6 and they are not yet mentioned in the configs of nodes 1, 2 and 3.
-Thus they cannot synchronize. Let's change that. In the docker-compose file, update the environment variables of nodes 1, 2 and 3 as follows:
+Now that we have four Zookeeper nodes forming a quorum, we can add the addition two nodes.
+In the docker-compose file, update the environment variables of nodes 1, 2, 3 and 4 as follows:
 Comment the ZOOKEEPER_SERVERS line where only nodes 1, 2 and 3 are present. Uncomment the line where all six nodes are present.
-Then, restart the containers:
+Then, restart the containers, one by one (if you want to be extra-cautious, you might want to restart followers first and the leader last):
 
 ```shell
-docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-1 zookeeper-2 zookeeper-3
-``
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-4
+sleep 2
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-3
+sleep 2
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-2
+sleep 2
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-1
+```
+
+Check the state again:
+
+```shell
+for PORT in 21811 21812 21813 21814 21815 21816; do echo $PORT; (echo stats | nc localhost ${PORT}|grep -E "Mode|current"); done
+```
+
+All nodes should have joined the quorum.
+
+Check the current epoch of each node:
+
+```shell
+for ID in 1 2 3 4 5 6; do echo -n "$ID: "; docker exec -t zookeeper-${ID} cat /var/lib/zookeeper/data/version-2/currentEpoch; echo ""; done
+```
+
+We expect to have identical values for each node.
+
+You are done. Congratulations. Please be aware that you are resilient against the loss of two nodes in this setup. If three nodes are in one data center and three nodes in the other, a loss of a data center or a network partitioning between them will cause Zookeeper to loose quorum!
+The nodes will stop serving requests. Manual interaction would be required in case the missing nodes are not suspected to come back automatically. You'd need to add at least one node or reduce the nodes mentioned in the server list (the latter is preferred!).
+
+### Explanation
+
+We start with a pre-condition: Nodes 1, 2 and 3 are considered pre-existing nodes which have a non-empty znode namespace already. This is the normal result of setting up those three nodes with auto-creation of the data dir enabled. Nodes 4, 5 and 6 are created with auto-creation of the data dir disabled (!). We need to simulate this in docker by customizing the `run command`. For bare-metal server installations of Zookeeper, just disable auto creation by following the Zookeeper documentation, e.g. set the environment variable ZOO_DATADIR_AUTOCREATE_DISABLE to 1 before running the init script or add `-Dzookeeper.datadir.autocreate=false` to the java command line. Then use the `zkServer-initialize.sh` script to do just a basic initialization of the data dir, without creating a znode namespace. Start the new nodes. The expected behavior is that the set the current epoche to `-1` and try to synchronize from existing Zookeeper nodes, but only if those form a quorum!
+
+The number of nodes in the servers list is used to determine the number of nodes required for a quorum. We start by bringing up the nodes 1, 2 and 3 and let them initialize properly. They know nothing about nodes 4, 5 and 6 yet and can thus easily form a quorum. Instead of adding all new servers at once (which would result in six nodes in total, thus our three properly initializd nodes wouldn't have a quorum), we start by adding only one new node, namely node 4. We make sure that node 4 knows only about the existing three nodes and itself.
+
+Nodes 1-5 each know only about 5 nodes, thus the three properly initialized nodes 1, 2 and 3 are used a source for synchronization from nodes 3 and 4. Only after that we update the configuration again.
 
 ## How to avoid a split-brain: Hiearchical quorum and disabled auto-create
 

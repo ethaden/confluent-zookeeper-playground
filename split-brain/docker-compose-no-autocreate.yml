@@ -44,9 +44,7 @@ services:
       # Final configuration
       #ZOOKEEPER_GROUP_1=1:2:4
       #ZOOKEEPER_GROUP_2=3:5:6
-      # Step 2: Bring 5 nodes up (the 3 originals and 2 new nodes) for ensuring a quorum and propery initialization of the new nodes
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
-      # Step 3: Add the remaining new node as soon as all other nodes are in sync
+      # Step 3: Enable all nodes
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
 
   zookeeper-2:
@@ -75,9 +73,7 @@ services:
       # Final configuration
       #ZOOKEEPER_GROUP_1=1:2:4
       #ZOOKEEPER_GROUP_2=3:5:6
-      # Step 2: Bring 5 nodes up (the 3 originals and 2 new nodes) for ensuring a quorum and propery initialization of the new nodes
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
-      # Step 3: Add the remaining new node as soon as all other nodes are in sync
+      # Step 3: Enable all nodes
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
 
   zookeeper-4:
@@ -114,12 +110,12 @@ services:
       ZOOKEEPER_CLIENT_PORT: 21814
       ZOOKEEPER_JMX_PORT: 21804
       # Step 1: Initial configuration
-      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
       # Final configuration
       #ZOOKEEPER_GROUP_1=1:2:4
       #ZOOKEEPER_GROUP_2=3:5:6
       # Step 2: Bring 5 nodes up (the 3 originals and 2 new nodes) for ensuring a quorum and propery initialization of the new nodes
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888
       # Step 3: Add the remaining new node as soon as all other nodes are in sync
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
  
@@ -148,14 +144,12 @@ services:
       ZOOKEEPER_CLIENT_PORT: 21813
       ZOOKEEPER_JMX_PORT: 21803
       # Step 1: Initial configuration
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
       # Final configuration
       #ZOOKEEPER_GROUP_1=1:2:4
       #ZOOKEEPER_GROUP_2=3:5:6
-      # Step 2: Bring 5 nodes up (the 3 originals and 2 new nodes) for ensuring a quorum and propery initialization of the new nodes
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
-      # Step 3: Add the remaining new node as soon as all other nodes are in sync
-      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+      # Step 3: Enable all nodes
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
 
   zookeeper-5:
     image: confluentinc/cp-zookeeper:${CP_VERSION}
@@ -190,14 +184,7 @@ services:
       ZOOKEEPER_JMX_HOSTNAME: zookeeper-5
       ZOOKEEPER_CLIENT_PORT: 21815
       ZOOKEEPER_JMX_PORT: 21805
-      # Step 1: Initial configuration
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
-      # Final configuration
-      #ZOOKEEPER_GROUP_1=1:2:4
-      #ZOOKEEPER_GROUP_2=3:5:6
-      # Step 2: Bring 5 nodes up (the 3 originals and 2 new nodes) for ensuring a quorum and propery initialization of the new nodes
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
-      # Step 3: Add the remaining new node as soon as all other nodes are in sync
+      # Step 3: Enable all nodes
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
 
   zookeeper-6:
@@ -233,14 +220,7 @@ services:
       ZOOKEEPER_JMX_HOSTNAME: zookeeper-6
       ZOOKEEPER_CLIENT_PORT: 21816
       ZOOKEEPER_JMX_PORT: 21806
-      # Step 1: Initial configuration
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
-      # Final configuration
-      #ZOOKEEPER_GROUP_1=1:2:4
-      #ZOOKEEPER_GROUP_2=3:5:6
-      # Step 2: Bring 5 nodes up (the 3 originals and 2 new nodes) for ensuring a quorum and propery initialization of the new nodes
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
-      # Step 3: Add the remaining new node as soon as all other nodes are in sync
+      # Step 3: Enable all nodes
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
 
   kafka-1:
