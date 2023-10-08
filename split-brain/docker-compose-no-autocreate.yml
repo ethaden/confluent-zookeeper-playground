@@ -41,11 +41,13 @@ services:
       ZOOKEEPER_JMX_PORT: 21801
       # Step 1: Initial configuration
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
-      # Final configuration
-      #ZOOKEEPER_GROUP_1=1:2:4
-      #ZOOKEEPER_GROUP_2=3:5:6
       # Step 3: Enable all nodes
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+      # Setp 4: Assign nodes to one of the groups.
+      # Group 1 consists of nodes 1, 2 and 4 and is located in data center 1.
+      # Group 2 consists of nodes 3, 5 and 6 and is located in data center 1.
+      #ZOOKEEPER_GROUP_1=1:2:4
+      #ZOOKEEPER_GROUP_2=3:5:6
 
   zookeeper-2:
     image: confluentinc/cp-zookeeper:${CP_VERSION}
@@ -70,11 +72,13 @@ services:
       ZOOKEEPER_JMX_PORT: 21802
       # Step 1: Initial configuration
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
-      # Final configuration
-      #ZOOKEEPER_GROUP_1=1:2:4
-      #ZOOKEEPER_GROUP_2=3:5:6
       # Step 3: Enable all nodes
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+      # Setp 4: Assign nodes to one of the groups.
+      # Group 1 consists of nodes 1, 2 and 4 and is located in data center 1.
+      # Group 2 consists of nodes 3, 5 and 6 and is located in data center 1.
+      #ZOOKEEPER_GROUP_1=1:2:4
+      #ZOOKEEPER_GROUP_2=3:5:6
 
   zookeeper-4:
     image: confluentinc/cp-zookeeper:${CP_VERSION}
@@ -111,13 +115,15 @@ services:
       ZOOKEEPER_JMX_PORT: 21804
       # Step 1: Initial configuration
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
-      # Final configuration
-      #ZOOKEEPER_GROUP_1=1:2:4
-      #ZOOKEEPER_GROUP_2=3:5:6
-      # Step 2: Bring 5 nodes up (the 3 originals and 2 new nodes) for ensuring a quorum and propery initialization of the new nodes
+      # Step 2: Bring 4 nodes up (the 3 originals and 1 new node) for ensuring a quorum and propery initialization of the new nodes
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888
       # Step 3: Add the remaining new node as soon as all other nodes are in sync
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+      # Setp 4: Assign nodes to one of the groups.
+      # Group 1 consists of nodes 1, 2 and 4 and is located in data center 1.
+      # Group 2 consists of nodes 3, 5 and 6 and is located in data center 1.
+      #ZOOKEEPER_GROUP_1=1:2:4
+      #ZOOKEEPER_GROUP_2=3:5:6
  
   ############################################################
   # Data Center 2                                            #
@@ -145,11 +151,13 @@ services:
       ZOOKEEPER_JMX_PORT: 21803
       # Step 1: Initial configuration
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
-      # Final configuration
-      #ZOOKEEPER_GROUP_1=1:2:4
-      #ZOOKEEPER_GROUP_2=3:5:6
       # Step 3: Enable all nodes
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+      # Setp 4: Assign nodes to one of the groups.
+      # Group 1 consists of nodes 1, 2 and 4 and is located in data center 1.
+      # Group 2 consists of nodes 3, 5 and 6 and is located in data center 1.
+      #ZOOKEEPER_GROUP_1=1:2:4
+      #ZOOKEEPER_GROUP_2=3:5:6
 
   zookeeper-5:
     image: confluentinc/cp-zookeeper:${CP_VERSION}
@@ -186,6 +194,11 @@ services:
       ZOOKEEPER_JMX_PORT: 21805
       # Step 3: Enable all nodes
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+      # Setp 4: Assign nodes to one of the groups.
+      # Group 1 consists of nodes 1, 2 and 4 and is located in data center 1.
+      # Group 2 consists of nodes 3, 5 and 6 and is located in data center 1.
+      #ZOOKEEPER_GROUP_1=1:2:4
+      #ZOOKEEPER_GROUP_2=3:5:6
 
   zookeeper-6:
     image: confluentinc/cp-zookeeper:${CP_VERSION}
@@ -222,6 +235,11 @@ services:
       ZOOKEEPER_JMX_PORT: 21806
       # Step 3: Enable all nodes
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
+      # Setp 4: Assign nodes to one of the groups.
+      # Group 1 consists of nodes 1, 2 and 4 and is located in data center 1.
+      # Group 2 consists of nodes 3, 5 and 6 and is located in data center 1.
+      #ZOOKEEPER_GROUP_1=1:2:4
+      #ZOOKEEPER_GROUP_2=3:5:6
 
   kafka-1:
     image:  confluentinc/cp-enterprise-kafka:${CP_VERSION}
