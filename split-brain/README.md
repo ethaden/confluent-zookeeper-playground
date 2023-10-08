@@ -95,15 +95,15 @@ Then, restart the containers, one by one (if you want to be extra-cautious, you 
 
 ```shell
 docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-6
-sleep 2
+sleep 5
 docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-5
-sleep 2
+sleep 5
 docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-4
-sleep 2
+sleep 5
 docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-3
-sleep 2
+sleep 5
 docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-2
-sleep 2
+sleep 5
 docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-1
 ```
 
