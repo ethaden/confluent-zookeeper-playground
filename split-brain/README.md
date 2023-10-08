@@ -43,7 +43,7 @@ Potentially, restart the second previous follower as well. You might see two lea
 Stop the cluster:
 
 ```bash
-docker-compose down
+docker-compose down -v
 ```
 
 ## How to avoid a split-brain: Disabled data dir auto-create for new nodes
@@ -85,10 +85,10 @@ docker-compose -f docker-compose-with-observers.yml up -d
 
 The idea is, to have working copy synchronized to the observers, than shut down the original nodes, reconfigure the observers to be full nodes and restart them. Note, that this is UNTESTED.
 
-Finally, stop the cluster by running:
+Finally, stop the cluster by running (IMPORTANT: Make sure to specify the option `-v` for the `down` command to erase the volumes created by docker-compose!):
 
 ```bash
-docker-compose -f docker-compose-with-observers.yml down
+docker-compose -f docker-compose-with-observers.yml down -v
 ```
 
 ## How to avoid a split-brain: Dynamic reconfiguration with Observers

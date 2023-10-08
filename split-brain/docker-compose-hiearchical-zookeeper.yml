@@ -1,5 +1,4 @@
----
-version: "3.5"
+# IMPORTANT: Use "docker -f <config-file> down -v" to remove not only containers and network but also volumes!
 
 x-zookeeper-common-settings: &zookeeper-common-settings
   

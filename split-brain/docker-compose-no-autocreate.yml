@@ -1,5 +1,5 @@
 ---
-version: "3.5"
+# IMPORTANT: Use "docker -f <config-file> down -v" to remove not only containers and network but also volumes!
 
 x-zookeeper-common-settings: &zookeeper-common-settings
   
@@ -40,12 +40,12 @@ services:
       ZOOKEEPER_CLIENT_PORT: 21811
       ZOOKEEPER_JMX_PORT: 21801
       # Step 1: Initial configuration
-      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
       # Final configuration
       #ZOOKEEPER_GROUP_1=1:2:4
       #ZOOKEEPER_GROUP_2=3:5:6
       # Step 2: Bring 5 nodes up (the 3 originals and 2 new nodes) for ensuring a quorum and propery initialization of the new nodes
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
       # Step 3: Add the remaining new node as soon as all other nodes are in sync
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
 
@@ -71,12 +71,12 @@ services:
       ZOOKEEPER_CLIENT_PORT: 21812
       ZOOKEEPER_JMX_PORT: 21802
       # Step 1: Initial configuration
-      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
       # Final configuration
       #ZOOKEEPER_GROUP_1=1:2:4
       #ZOOKEEPER_GROUP_2=3:5:6
       # Step 2: Bring 5 nodes up (the 3 originals and 2 new nodes) for ensuring a quorum and propery initialization of the new nodes
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
       # Step 3: Add the remaining new node as soon as all other nodes are in sync
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
 
@@ -98,18 +98,6 @@ services:
     # Note: The container needs to run for name resolution to work
     # Comment next line to enable this zookeeper instance
     #command: tail -F /dev/null
-    # We make sure the node is started without a znode namespace and thus forced to synchonize first
-    command:
-      - /bin/bash
-      - -c
-      - |
-        if [[ $$KAFKA_OPTS =~ 'Dzookeeper.db.autocreate=false' ]]; then
-          if ! [[ -f /var/lib/zookeeper/data/initialized ]]; then
-            rm -rf /var/lib/zookeeper/data/version-2
-            mkdir -p /var/lib/zookeeper/data/version-2
-            touch /var/lib/zookeeper/data/initialized
-          fi
-        fi && /etc/confluent/docker/run
     environment:
       ZOOKEEPER_TICK_TIME: 2000
       KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.db.autocreate=false"
@@ -152,12 +140,12 @@ services:
       ZOOKEEPER_CLIENT_PORT: 21813
       ZOOKEEPER_JMX_PORT: 21803
       # Step 1: Initial configuration
-      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
       # Final configuration
       #ZOOKEEPER_GROUP_1=1:2:4
       #ZOOKEEPER_GROUP_2=3:5:6
       # Step 2: Bring 5 nodes up (the 3 originals and 2 new nodes) for ensuring a quorum and propery initialization of the new nodes
-      #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888
       # Step 3: Add the remaining new node as soon as all other nodes are in sync
       #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888;zookeeper-4:2888:3888;zookeeper-5:2888:3888;zookeeper-6:2888:3888
 
@@ -179,18 +167,6 @@ services:
     # Note: The container needs to run for name resolution to work
     # Comment next line to enable this zookeeper instance
     #command: tail -F /dev/null
-    # We make sure the node is started without a znode namespace and thus forced to synchonize first
-    command:
-      - /bin/bash
-      - -c
-      - |
-        if [[ $$KAFKA_OPTS =~ 'Dzookeeper.db.autocreate=false' ]]; then
-          if ! [[ -f /var/lib/zookeeper/data/initialized ]]; then
-            rm -rf /var/lib/zookeeper/data/version-2
-            mkdir -p /var/lib/zookeeper/data/version-2
-            touch /var/lib/zookeeper/data/initialized
-          fi
-        fi && /etc/confluent/docker/run
     environment:
       ZOOKEEPER_TICK_TIME: 2000
       KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.db.autocreate=false"
@@ -226,18 +202,6 @@ services:
     # Note: The container needs to run for name resolution to work
     # Comment next line to enable this zookeeper instance
     #command: tail -F /dev/null
-    # We make sure the node is started without a znode namespace and thus forced to synchonize first
-    command:
-      - /bin/bash
-      - -c
-      - |
-        if [[ $$KAFKA_OPTS =~ 'Dzookeeper.db.autocreate=false' ]]; then
-          if ! [[ -f /var/lib/zookeeper/data/initialized ]]; then
-            rm -rf /var/lib/zookeeper/data/version-2
-            mkdir -p /var/lib/zookeeper/data/version-2
-            touch /var/lib/zookeeper/data/initialized
-          fi
-        fi && /etc/confluent/docker/run
     environment:
       ZOOKEEPER_TICK_TIME: 2000
       KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.db.autocreate=false"
