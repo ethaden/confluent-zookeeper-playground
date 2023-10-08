@@ -103,9 +103,13 @@ services:
       - /bin/bash
       - -c
       - |
-        rm -rf /var/lib/zookeeper/data/version-2
-        mkdir -p /var/lib/zookeeper/data/version-2
-        /etc/confluent/docker/run
+        if [[ $$KAFKA_OPTS =~ 'Dzookeeper.db.autocreate=false' ]]; then
+          if ! [[ -f /var/lib/zookeeper/data/initialized ]]; then
+            rm -rf /var/lib/zookeeper/data/version-2
+            mkdir -p /var/lib/zookeeper/data/version-2
+            touch /var/lib/zookeeper/data/initialized
+          fi
+        fi && /etc/confluent/docker/run
     environment:
       ZOOKEEPER_TICK_TIME: 2000
       KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.db.autocreate=false"
@@ -180,9 +184,13 @@ services:
       - /bin/bash
       - -c
       - |
-        rm -rf /var/lib/zookeeper/data/version-2
-        mkdir -p /var/lib/zookeeper/data/version-2
-        /etc/confluent/docker/run
+        if [[ $$KAFKA_OPTS =~ 'Dzookeeper.db.autocreate=false' ]]; then
+          if ! [[ -f /var/lib/zookeeper/data/initialized ]]; then
+            rm -rf /var/lib/zookeeper/data/version-2
+            mkdir -p /var/lib/zookeeper/data/version-2
+            touch /var/lib/zookeeper/data/initialized
+          fi
+        fi && /etc/confluent/docker/run
     environment:
       ZOOKEEPER_TICK_TIME: 2000
       KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.db.autocreate=false"
@@ -223,9 +231,13 @@ services:
       - /bin/bash
       - -c
       - |
-        rm -rf /var/lib/zookeeper/data/version-2
-        mkdir -p /var/lib/zookeeper/data/version-2
-        /etc/confluent/docker/run
+        if [[ $$KAFKA_OPTS =~ 'Dzookeeper.db.autocreate=false' ]]; then
+          if ! [[ -f /var/lib/zookeeper/data/initialized ]]; then
+            rm -rf /var/lib/zookeeper/data/version-2
+            mkdir -p /var/lib/zookeeper/data/version-2
+            touch /var/lib/zookeeper/data/initialized
+          fi
+        fi && /etc/confluent/docker/run
     environment:
       ZOOKEEPER_TICK_TIME: 2000
       KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.db.autocreate=false"
