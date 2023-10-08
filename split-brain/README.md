@@ -94,6 +94,10 @@ Comment the ZOOKEEPER_SERVERS line where only nodes 1, 2 and 3 are present. Unco
 Then, restart the containers, one by one (if you want to be extra-cautious, you might want to restart followers first and the leader last):
 
 ```shell
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-6
+sleep 2
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-5
+sleep 2
 docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-4
 sleep 2
 docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-3
