@@ -2,6 +2,10 @@
 
 This configuration is erroneous due to having an even number of zookeeper nodes. It might lead to a `split-brain` situation, where two leaders exist.
 
+CAUTION: Everything contained in this repository is not supported by Confluent.
+
+DISCLAIMER AND WARNING: You use this code at your own risk! Please do not use it for production systems. The author may not be held responsible for any harm caused by this code!
+
 ## Running the demo
 
 Start docker containers, but only three zookeeper nodes for now, use this line for the three nodes
@@ -63,6 +67,7 @@ docker-compose -f docker-compose-with-observers.yml down
 ```
 
 ## How to avoid a split-brain: Dynamic reconfiguration with Observers
+
 Another alternative configuration is working with dynamic reconfiguration and observers. Note, that the docker image does not support this out of the box, thus a little hack is required. The configuration is splitted in two config files: One is configured using the environment variables which are interpreted by the docker image startup scripts to create a static configuration file. This static configuration enables dynamic reconfiguration and defines a dynamic reconfiguration file. This dynamic reconfiguration file is mounted as a volume. Each zookeeper node has a separate dynamic configuration file, to allow individual fine-granular modifications. The servers are defined in the dynamic configuration.
 
 We start with a reasonable dynamic configuration, which you can find in `config/zookeeper.properties.dynamic`.
