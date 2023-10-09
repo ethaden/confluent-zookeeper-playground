@@ -47,8 +47,137 @@ Potentially, restart the second previous follower as well. You might see two lea
 Stop the cluster:
 
 ```bash
-docker-compose down
+docker-compose down -v
 ```
+
+## How to avoid a split-brain: Disabled data dir auto-create for new nodes
+
+Let's assume we have three working nodes, nodes 1 and 2 are in data center 1 (DC1) and node 3 (!) is in data center 2 (DC2). We want to avoid the situation that the two nodes in DC1 just update the Kafka configuration with their majority without having to get a vote from the node(s) in DC2.
+
+Thus, we spin up three additional nodes. However, we make sure these nodes do not auto-create an empty namespace (otherweise they could cause a split-brain situation where the three old nodes have different state than the three new nodes).
+
+In this setup, having three nodes in each data center ensures that quorum requires at least 4 nodes. No data center can decide anything without the other. Obviously, this is great for consistency and durability of our metadata, but bad for availability (if one DC is down, nothing works anymore).
+
+Note: We disabled auto-creation of data dirs for nodes 4, 5 and 6. They need to get their initial state from an existing quorum.
+
+Spin up the initial three nodes by running:
+
+```shell
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-1 zookeeper-2 zookeeper-3
+```
+
+Check their states by running:
+
+```shell
+for PORT in 21811 21812 21813 21814 21815 21816; do echo $PORT; (echo stats | nc localhost ${PORT}|grep -E "Mode|current"); done
+```
+
+Bring up a fourth node, which is configured just to know the first three and itself (and does NOT auto-create its data dir):
+
+```shell
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-4
+``
+
+Check the state again:
+
+```shell
+for PORT in 21811 21812 21813 21814 21815 21816; do echo $PORT; (echo stats | nc localhost ${PORT}|grep -E "Mode|current"); done
+```
+
+Check the current epoch of each node:
+
+```shell
+for ID in 1 2 3 4 5 6; do echo -n "$ID: "; docker exec -t zookeeper-${ID} cat /var/lib/zookeeper/data/version-2/currentEpoch; echo ""; done
+```
+
+The fourth node should have joined the quorum. If you want just four nodes, update the server configuration of nodes 1, 2 and 3 and restart them one by one. If you want to go for six nodes, continue below.
+
+Now that we have four Zookeeper nodes forming a quorum, we can add the addition two nodes.
+In the docker-compose file, update the environment variables of nodes 1, 2, 3 and 4 as follows:
+Comment the ZOOKEEPER_SERVERS line where only nodes 1, 2 and 3 are present. Uncomment the line where all six nodes are present.
+Then, restart the containers, one by one (if you want to be extra-cautious, you might want to restart followers first and the leader last):
+
+```shell
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-6
+sleep 5
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-5
+sleep 5
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-4
+sleep 5
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-3
+sleep 5
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-2
+sleep 5
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-1
+```
+
+Check the state again:
+
+```shell
+for PORT in 21811 21812 21813 21814 21815 21816; do echo $PORT; (echo stats | nc localhost ${PORT}|grep -E "Mode|current"); done
+```
+
+All nodes should have joined the quorum.
+
+Check the current epoch of each node:
+
+```shell
+for ID in 1 2 3 4 5 6; do echo -n "$ID: "; docker exec -t zookeeper-${ID} cat /var/lib/zookeeper/data/version-2/currentEpoch; echo ""; done
+```
+
+We expect to have identical values for each node.
+
+You are done. Congratulations. Please be aware that you are resilient against the loss of two nodes in this setup. If three nodes are in one data center and three nodes in the other, a loss of a data center or a network partitioning between them will cause Zookeeper to loose quorum!
+The nodes will stop serving requests. Manual interaction would be required in case the missing nodes are not suspected to come back automatically. You'd need to add at least one node or reduce the nodes mentioned in the server list (the latter is preferred!).
+
+### Explanation
+
+We start with a pre-condition: Nodes 1, 2 and 3 are considered pre-existing nodes which have a non-empty znode namespace already. This is the normal result of setting up those three nodes with auto-creation of the data dir enabled. Nodes 4, 5 and 6 are created with auto-creation of the data dir disabled (!). We need to simulate this in docker by customizing the `run command`. For bare-metal server installations of Zookeeper, just disable auto creation by following the Zookeeper documentation, e.g. set the environment variable ZOO_DATADIR_AUTOCREATE_DISABLE to 1 before running the init script or add `-Dzookeeper.datadir.autocreate=false` to the java command line. Then use the `zkServer-initialize.sh` script to do just a basic initialization of the data dir, without creating a znode namespace. Start the new nodes. The expected behavior is that the set the current epoche to `-1` and try to synchronize from existing Zookeeper nodes, but only if those form a quorum!
+
+The number of nodes in the servers list is used to determine the number of nodes required for a quorum. We start by bringing up the nodes 1, 2 and 3 and let them initialize properly. They know nothing about nodes 4, 5 and 6 yet and can thus easily form a quorum. Instead of adding all new servers at once (which would result in six nodes in total, thus our three properly initializd nodes wouldn't have a quorum), we start by adding only one new node, namely node 4. We make sure that node 4 knows only about the existing three nodes and itself.
+
+Nodes 1-5 each know only about 5 nodes, thus the three properly initialized nodes 1, 2 and 3 are used a source for synchronization from nodes 3 and 4. Only after that we update the configuration again.
+
+## How to avoid a split-brain: Hiearchical quorum and disabled auto-create
+
+In this example we want to achieve a hiearchical setup consisting of two groups of Zookeeper nodes (one per data center), where each group consists of three nodes located in the same data center. The main advantage over having three nodes in one and three nodes in the other data center is that this solution is battle-proved and recommended.
+
+Follow the steps described in the last section to spin up six Zookeeper nodes. Then, edit the docker compose file and enable the lines for configuring the groups for each of the nodes. Restart the nodes by running:
+
+```shell
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-1
+sleep 5
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-2
+sleep 5
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-4
+sleep 5
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-3
+sleep 5
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-5
+sleep 5
+docker-compose -f docker-compose-no-autocreate.yml up -d zookeeper-6
+```
+
+Check the state again:
+
+```shell
+for PORT in 21811 21812 21813 21814 21815 21816; do echo $PORT; (echo stats | nc localhost ${PORT}|grep -E "Mode|current"); done
+```
+
+All nodes should have joined the quorum.
+
+Check the current epoch of each node:
+
+```shell
+for ID in 1 2 3 4 5 6; do echo -n "$ID: "; docker exec -t zookeeper-${ID} cat /var/lib/zookeeper/data/version-2/currentEpoch; echo ""; done
+```
+
+You can test the hierarchical quorum by stopping two nodes in the same group. In a regular setup with six nodes, this wouldn't cause quorum to be lost. In a hierarchical setup quorum will be lost.
+
+```shell
+docker-compose -f docker-compose-no-autocreate.yml stop zookeeper-5 zookeeper-6
+```
+
 
 ## How to avoid a split-brain: Observers (not working properly)
 
@@ -60,10 +189,10 @@ docker-compose -f docker-compose-with-observers.yml up -d
 
 The idea is, to have working copy synchronized to the observers, than shut down the original nodes, reconfigure the observers to be full nodes and restart them. Note, that this is UNTESTED.
 
-Finally, stop the cluster by running:
+Finally, stop the cluster by running (IMPORTANT: Make sure to specify the option `-v` for the `down` command to erase the volumes created by docker-compose!):
 
 ```bash
-docker-compose -f docker-compose-with-observers.yml down
+docker-compose -f docker-compose-with-observers.yml down -v
 ```
 
 ## How to avoid a split-brain: Dynamic reconfiguration with Observers
